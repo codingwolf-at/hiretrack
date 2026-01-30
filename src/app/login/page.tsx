@@ -12,20 +12,18 @@ const Page = () => {
     const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
-
     const supabase = createSupabaseBrowserClient();
 
     const handleLogin = async () => {
         setLoading(true);
         setError(null);
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email: email.trim(),
             password: password.trim(),
         })
         if (error) {
             setError(error.message);
         } else {
-            console.log('success');
             router.push('/dashboard');
         }
         setLoading(false);
