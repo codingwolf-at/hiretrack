@@ -20,3 +20,32 @@ export const SIDEBAR_LIST_ITEMS = [
         label: 'Settings'
     }
 ];
+
+export const APPLICATION_STATUS = {
+    APPLIED: 'applied',
+    HR: 'hr',
+    TECHNICAL: 'technical',
+    FINAL: 'final',
+    OFFER: 'offer',
+    ACCEPTED: 'accepted',
+    REJECTED: 'rejected',
+    WITHDRAWN: 'withdrawn'
+};
+
+export const IN_PROGRESS_STATUS = [
+    APPLICATION_STATUS.APPLIED,
+    APPLICATION_STATUS.HR,
+    APPLICATION_STATUS.TECHNICAL,
+    APPLICATION_STATUS.FINAL,
+    APPLICATION_STATUS.OFFER
+];
+
+export const OFFER_STATUS = [
+    APPLICATION_STATUS.OFFER,
+    APPLICATION_STATUS.ACCEPTED
+];
+
+export const CLOSED_STATUS = [
+    APPLICATION_STATUS.REJECTED,
+    APPLICATION_STATUS.WITHDRAWN
+];
