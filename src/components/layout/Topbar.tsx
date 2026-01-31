@@ -5,7 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import { usePathname, useRouter } from "next/navigation";
 
 import { SIDEBAR_LIST_ITEMS } from "@/constants/ui";
-import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
 
 const Topbar = ({ user }: { user: User }) => {
 

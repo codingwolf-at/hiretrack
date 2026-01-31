@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { createSupabaseServerClient } from "@/lib/supabase/supabaseServer";
 
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
