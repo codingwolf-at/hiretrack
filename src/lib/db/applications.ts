@@ -8,7 +8,9 @@ export const getUserApplications = async (): Promise<Application[]> => {
 
     const { data } = await supabase
         .from("applications")
-        .select("*");
+        .select("*")
+        .order("applied_date", { ascending: false, nullsFirst: false })
+        .order("created_at", { ascending: false });
 
     return data ?? [];
 };

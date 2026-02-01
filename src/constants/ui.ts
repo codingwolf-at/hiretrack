@@ -60,3 +60,13 @@ export const CLOSED_STATUS = [
     APPLICATION_STATUS.REJECTED,
     APPLICATION_STATUS.WITHDRAWN
 ];
+
+export const APPLICATION_KEYS = {
+    STATUS: "status",
+    ACTIONS: "actions",
+    APPLIED_DATE: "applied_date"
+};
+
+export const RECENT_APPLICATIONS_TABLE_FIELDS = ["company_name", "role", "status", "applied_date", "actions"];
+
+export const RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS = ["Company", "Role", "Status", "Applied", ""];
