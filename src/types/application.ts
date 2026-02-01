@@ -1,3 +1,13 @@
+export type ApplicationStatus =  
+    | "applied"
+    | "hr"
+    | "technical"
+    | "final"
+    | "offer"
+    | "accepted"
+    | "rejected"
+    | "withdrawn";
+
 export type Application = {
     id: string;
     user_id: string;
@@ -8,15 +18,7 @@ export type Application = {
     location: string | null;
     job_url: string | null;
 
-    status:
-    | "applied"
-    | "hr"
-    | "technical"
-    | "final"
-    | "offer"
-    | "accepted"
-    | "rejected"
-    | "withdrawn";
+    status: ApplicationStatus;
 
     applied_date: string | null;
     salary_range: string | null;
