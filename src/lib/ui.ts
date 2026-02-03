@@ -1,5 +1,7 @@
-import { CLOSED_STATUS, IN_PROGRESS_STATUS, OFFER_STATUS } from "@/constants/ui";
+import { twMerge } from 'tailwind-merge';
+import { clsx, type ClassValue } from 'clsx';
 import { Application } from "@/types/application";
+import { CLOSED_STATUS, IN_PROGRESS_STATUS, OFFER_STATUS } from "@/constants/ui";
 
 export const getApplicationsCountByStatus = (applications: Application[]) => {
     const totalCount = applications.length;
@@ -14,3 +16,5 @@ export const getApplicationsCountByStatus = (applications: Application[]) => {
         closedCount
     };
 }
+
+export const mergeClass = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
