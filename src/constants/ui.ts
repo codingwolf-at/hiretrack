@@ -1,23 +1,31 @@
+import { Briefcase, Calendar, LayoutDashboard, Settings } from "lucide-react";
+
 export const SIDEBAR_LIST_ITEMS = [
     {
         id: 'dashboard',
         route: '/dashboard',
-        label: 'Dashboard'
+        label: 'Dashboard',
+        icon: LayoutDashboard,
     },
     {
         id: 'applications',
         route: '/applications',
-        label: 'Applications'
+        label: 'Applications',
+        icon: Briefcase,
+
     },
     {
         id: 'interviews',
         route: '/interviews',
-        label: 'Interviews'
+        label: 'Interviews',
+        icon: Calendar,
+
     },
     {
         id: 'settings',
         route: '/settings',
-        label: 'Settings'
+        label: 'Settings',
+        icon: Settings,
     }
 ];
 

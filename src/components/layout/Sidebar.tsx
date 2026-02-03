@@ -1,27 +1,80 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-
+import { Briefcase, LogOut } from "lucide-react";
+// constants
 import { SIDEBAR_LIST_ITEMS } from "@/constants/ui";
 
 const Sidebar = () => {
+    const [collapsed] = useState(false);
+    // TODO: make it collapsable
 
     const pathname = usePathname();
 
     return (
-        <aside className="w-1/6 bg-[#111111] border-r border-white/10">
-            <div className="h-16 border-b border-white/10 flex items-center p-4">
-                <h1 className="text-white font-medium text-2xl">
-                    HireTrack
-                </h1>
-            </div>
-            <div className="p-4 space-y-2 flex flex-col">
-                {SIDEBAR_LIST_ITEMS.map(({ id, route, label }) => (
-                    <Link key={id} href={route} className={`text-white p-2 cursor-pointer rounded-md ${pathname.startsWith(route) ? 'bg-[#1a1a1a] border-l-4 border-blue-500 pl-3' : ''}`}>
-                        {label}
+        <aside className="col-span-1 z-40 h-screen border-r border-border bg-sidebar transition-all duration-300">
+            <div className="flex h-full flex-col">
+                {/* Logo */}
+                <div className="flex h-16 items-center justify-between border-b border-border px-4">
+                    {!collapsed && (
+                        <Link href="/" className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
+                                <Briefcase className="h-4 w-4 text-accent-foreground" />
+                            </div>
+                            <span className="font-semibold text-foreground">HireTrack</span>
+                        </Link>
+                    )}
+                    {collapsed && (
+                        <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
+                            <Briefcase className="h-4 w-4 text-accent-foreground" />
+                        </div>
+                    )}
+                </div>
+                {/* Navbar */}
+                <nav className="flex-1 space-y-1 px-3 py-4">
+                    {SIDEBAR_LIST_ITEMS.map(({ route, icon: Icon, label }) => {
+                        const isActive = pathname === route
+                        return (
+                            <Link
+                                key={route}
+                                href={route}
+                                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors 
+                                    ${isActive
+                                        ? "bg-sidebar-accent text-accent"
+                                        : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"}
+                                `}
+                            >
+                                <Icon className="h-5 w-5 shrink-0" />
+                                {!collapsed && <span>{label}</span>}
+                            </Link>
+                        )
+                    })}
+                </nav>
+                {/* Bottom Section */}
+                <div className="border-t border-border p-3">
+                    {/* <button
+                        onClick={() => setCollapsed(!collapsed)}
+                        className="mb-2 flex w-full items-center justify-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+                    >
+                        {collapsed ? (
+                            <ChevronRight className="h-5 w-5" />
+                        ) : (
+                            <>
+                                <ChevronLeft className="h-5 w-5" />
+                                <span>Collapse</span>
+                            </>
+                        )}
+                    </button> */}
+                    <Link
+                        href="/logout"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-destructive"
+                    >
+                        <LogOut className="h-5 w-5 shrink-0" />
+                        {!collapsed && <span>Log out</span>}
                     </Link>
-                ))}
+                </div>
             </div>
         </aside>
     );

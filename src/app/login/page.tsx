@@ -34,6 +34,7 @@ const Page = () => {
     };
 
     // TODO: currently the password is not in encrypted form and we can see it in the network tab
+    // TODO: currently if i am logged in and go to route /login it should redirect me to dashboard
     // TODO: UI 
 
     return (
