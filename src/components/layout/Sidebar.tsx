@@ -2,19 +2,29 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { Briefcase, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Briefcase, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 // constants
 import { SIDEBAR_LIST_ITEMS } from "@/constants/ui";
+// helpers
+import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
 
 const Sidebar = () => {
-    const [collapsed] = useState(false);
-    // TODO: make it collapsable
+    const [collapsed, setCollapsed] = useState(false);
+    const [loggingOut, setLoggingOut] = useState(false);
 
     const pathname = usePathname();
+    const router = useRouter();
+    const supabase = createSupabaseBrowserClient();
+
+    const handleLogout = async () => {
+        setLoggingOut(true);
+        await supabase.auth.signOut();
+        router.push('/login');
+    }
 
     return (
-        <aside className="col-span-1 z-40 h-screen border-r border-border bg-sidebar transition-all duration-300">
+        <aside className={`${collapsed ? "w-16" : "w-64"} z-40 h-screen border-r border-border bg-sidebar transition-all duration-300`}>
             <div className="flex h-full flex-col">
                 {/* Logo */}
                 <div className="flex h-16 items-center justify-between border-b border-border px-4">
@@ -54,7 +64,7 @@ const Sidebar = () => {
                 </nav>
                 {/* Bottom Section */}
                 <div className="border-t border-border p-3">
-                    {/* <button
+                    <button
                         onClick={() => setCollapsed(!collapsed)}
                         className="mb-2 flex w-full items-center justify-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
                     >
@@ -66,14 +76,15 @@ const Sidebar = () => {
                                 <span>Collapse</span>
                             </>
                         )}
-                    </button> */}
-                    <Link
-                        href="/logout"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-destructive"
+                    </button>
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full cursor-pointer gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-destructive"
+                        disabled={loggingOut}
                     >
                         <LogOut className="h-5 w-5 shrink-0" />
                         {!collapsed && <span>Log out</span>}
-                    </Link>
+                    </button>
                 </div>
             </div>
         </aside>
