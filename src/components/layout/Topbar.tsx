@@ -1,41 +1,47 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
+import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
-import { usePathname, useRouter } from "next/navigation";
-
+// constants
 import { SIDEBAR_LIST_ITEMS } from "@/constants/ui";
-import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
+// components
+import Button from "../ui/Button";
+import Avatar from "../ui/Avatar";
 
 const Topbar = ({ user }: { user: User }) => {
-
-    const [loggingOut, setLoggingOut] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
     const pathname = usePathname();
-    const router = useRouter();
-    const supabase = createSupabaseBrowserClient();
 
     const userName = user.user_metadata?.full_name || user.email?.split("@")[0];
     const currentRouteLabel = SIDEBAR_LIST_ITEMS.find(el => pathname.startsWith(el.route))?.label;
 
-    const handleLogout = async () => {
-        setLoggingOut(true);
-        await supabase.auth.signOut();
-        router.push('/login');
-    }
-
     return (
-        <div className="text-white h-16 border-b flex justify-between items-center p-4 border-white/10 bg-[#141414] backdrop-blur">
-            <p className="font-medium text-lg">
-                {currentRouteLabel}
-            </p>
-            <div className="flex gap-4">
-                <p>{userName}</p>
-                <button type="button" onClick={handleLogout} className="cursor-pointer">
-                    {loggingOut ? "Logging out..." : "Logout"}
-                </button>
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 px-6 backdrop-blur supports-backdrop-filter:bg-background/60">
+            <div>
+                <p className="text-xl font-semibold text-foreground">
+                    {currentRouteLabel}
+                </p>
+                {/* TODO: make this dynamic based on route */}
+                <p className="text-sm text-muted-foreground">Track your job search progress</p>
             </div>
-        </div>
+            <div className="flex items-center gap-3">
+                <Button
+                    size="sm"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90"
+                    onClick={() => setIsModalOpen(true)}
+                    disabled
+                >
+                    <Plus className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Add Application</span>
+                    <span className="sm:hidden">Add</span>
+                </Button>
+
+                <Avatar userName={userName} />
+            </div>
+        </header>
     );
 };
 

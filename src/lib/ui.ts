@@ -17,4 +17,11 @@ export const getApplicationsCountByStatus = (applications: Application[]) => {
     };
 }
 
+export const getInitials = (name: string): string =>
+    name
+      .trim()
+      .split(/\s+/)
+      .map(word => word.charAt(0).toUpperCase())
+      .join("");
+
 export const mergeClass = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
