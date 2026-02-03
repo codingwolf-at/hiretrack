@@ -25,7 +25,7 @@ const Topbar = ({ user }: { user: User }) => {
     }
 
     return (
-        <div className="text-white h-14 border-b border-gray-600 flex justify-between items-center p-4">
+        <div className="text-white h-16 border-b flex justify-between items-center p-4 border-white/10 bg-[#141414] backdrop-blur">
             <p className="font-medium text-lg">
                 {currentRouteLabel}
             </p>

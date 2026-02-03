@@ -21,9 +21,9 @@ const Layout = async ({
     }
 
     return (
-        <main className="flex min-h-screen w-full bg-black">
+        <main className="flex min-h-screen w-full bg-[#0f0f10]">
             <Sidebar />
-            <div className="flex-1">
+            <div className="w-5/6 bg-[#141414] min-h-screen">
                 <Topbar user={data.user} />
                 {children}
             </div>

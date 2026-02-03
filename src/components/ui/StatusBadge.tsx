@@ -19,7 +19,7 @@ const StatusBadge = ({ status }: { status: ApplicationStatus }) => {
     };
 
     return (
-        <div className={`${STATUS_STYLES[status]} inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0`}>
+        <div className={`${STATUS_STYLES[status]} inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium`}>
             {label}
         </div>
     );

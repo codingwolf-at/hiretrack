@@ -7,6 +7,8 @@ import StatusBadge from "../ui/StatusBadge";
 
 const RecentApplicationsTable = ({ applications }: { applications: Application[] }) => {
 
+    // TODO: give a min height to table (= height of 5 rows) so that it will help in empty state & when there are less rows
+
     const renderCellValue = (key: keyof Application, application: Application) => {
         if (key === APPLICATION_KEYS.STATUS) {
             return (
@@ -23,7 +25,7 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
             )
         } else if (key === APPLICATION_KEYS.APPLIED_DATE) {
             return (
-                <p className="text-sm text-slate-700">
+                <p className="text-sm text-gray-200">
                     {application.applied_date
                         ? new Date(application.applied_date).toLocaleDateString()
                         : "—"}
@@ -31,7 +33,7 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
             );
         } else {
             return (
-                <p className="block text-sm text-slate-800">
+                <p className="block text-sm text-gray-200">
                     {application[key]}
                 </p>
             )
@@ -40,17 +42,17 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
 
     return (
         <div className="rounded-lg">
-            <div className="w-full px-4 py-6 flex justify-between items-center">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                 <h3 className="text-lg font-semibold text-white">Recent Applications</h3>
-                <button className="cursor-pointer">View all</button>
+                <button className="cursor-pointer text-blue-500 font-medium hover:underline">View all</button>
             </div>
-            <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
+            <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-transparent rounded-lg bg-clip-border">
                 <table className="w-full text-left table-auto min-w-max">
                     <thead>
                         <tr>
                             {RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS.map(el => (
-                                <th key={el} className="p-4 border-b border-slate-300 bg-slate-50">
-                                    <p className="block text-sm font-normal leading-none text-slate-500">
+                                <th key={el} className="px-6 py-4 border-b text-gray-400 uppercase text-xs tracking-wide bg-transparent border-white/10">
+                                    <p className="block font-normal leading-none text-gray-400 uppercase tracking-wide text-xs">
                                         {el}
                                     </p>
                                 </th>
@@ -59,9 +61,9 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                     </thead>
                     <tbody>
                         {applications.map(application => (
-                            <tr key={application.id} className="hover:bg-slate-50">
+                            <tr key={application.id} className="hover:bg-white/3 transition-colors">
                                 {RECENT_APPLICATIONS_TABLE_FIELDS.map((el) => (
-                                    <td key={el} className="p-4 border-b border-slate-200">
+                                    <td key={el} className="px-6 py-4 border-b border-white/5">
                                         {renderCellValue(el as keyof Application, application)}
                                     </td>
                                 ))}
