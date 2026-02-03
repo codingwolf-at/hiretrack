@@ -34,6 +34,7 @@ const Page = () => {
     };
 
     // TODO: currently the password is not in encrypted form and we can see it in the network tab
+    // TODO: UI 
 
     return (
         <div className="min-h-screen bg-gray-950 flex items-center justify-center flex-col gap-6">
