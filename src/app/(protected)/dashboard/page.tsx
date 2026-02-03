@@ -3,6 +3,7 @@ import { getApplicationsCountByStatus } from "@/lib/ui";
 import { getUserApplications } from "@/lib/db/applications";
 // components
 import StatCard from "./StatCard";
+import Panel from "@/components/ui/Panel";
 import { Briefcase, CheckCircle, Clock, XCircle } from "lucide-react";
 import RecentApplicationsTable from "@/components/dashboard/RecentApplicationsTable";
 
@@ -13,6 +14,8 @@ const Page = async () => {
     const { totalCount, inProgressCount, offerCount, closedCount } = getApplicationsCountByStatus(applications);
 
     const recentApplications = applications.slice(0, 5);
+
+    // TODO: look into v0.dev & stich UI examples to improve the UI & UX further
 
     return (
         <div className="flex flex-col gap-8 p-6">
@@ -38,11 +41,11 @@ const Page = async () => {
                     icon={<XCircle className="text-red-500 h-6 w-6" />} 
                 />
             </div>
-            <div className="flex flex-1">
-                <div className="w-2/3 rounded-xl border border-white/10 bg-[#1a1a1a]">
+            <div className="flex-1 grid grid-cols-3 gap-6">
+                <Panel classes="col-span-2">
                     <RecentApplicationsTable applications={recentApplications} />
-                </div>
-                <div className="w-1/3">
+                </Panel>
+                <div className="col-span-1">
                     Interviews
                 </div>
             </div>
