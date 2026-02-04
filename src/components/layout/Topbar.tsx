@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Plus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
@@ -10,8 +9,12 @@ import { SIDEBAR_LIST_ITEMS } from "@/constants/ui";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 
-const Topbar = ({ user }: { user: User }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+type TopbarProps = {
+    user: User;
+    openSlideOver: () => void;
+};
+
+const Topbar = ({ user, openSlideOver }: TopbarProps ) => {
 
     const pathname = usePathname();
 
@@ -19,7 +22,7 @@ const Topbar = ({ user }: { user: User }) => {
     const currentRouteLabel = SIDEBAR_LIST_ITEMS.find(el => pathname.startsWith(el.route))?.label;
 
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 px-6 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <header className="flex z-50 h-16 items-center justify-between border-b border-border bg-background/95 px-6 backdrop-blur supports-backdrop-filter:bg-background/60">
             <div>
                 <p className="text-xl font-semibold text-foreground">
                     {currentRouteLabel}
@@ -31,7 +34,7 @@ const Topbar = ({ user }: { user: User }) => {
                 <Button
                     size="sm"
                     className="bg-accent text-accent-foreground hover:bg-accent/90"
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={openSlideOver}
                 >
                     <Plus className="mr-2 h-4 w-4" />
                     <span className="hidden sm:inline">Add Application</span>

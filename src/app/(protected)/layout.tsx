@@ -1,10 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-
 import { createSupabaseServerClient } from "@/lib/supabase/supabaseServer";
-
-import Sidebar from "@/components/layout/Sidebar";
-import Topbar from "@/components/layout/Topbar";
+import DashboardShell from "./DashboardShell";
 
 const Layout = async ({
     children,
@@ -16,18 +13,12 @@ const Layout = async ({
 
     const { data } = await supabase.auth.getUser();
 
-    if (!data.user) {
-        redirect("/login");
-    }
+    if (!data.user) redirect("/login");
 
     return (
-        <main className="flex min-h-screen w-full bg-background">
-            <Sidebar />
-            <div className="flex-1 transition-all duration-300">
-                <Topbar user={data.user} />
-                {children}
-            </div>
-        </main>
+        <DashboardShell user={data.user}>
+            {children}
+        </DashboardShell>
     );
 };
 
