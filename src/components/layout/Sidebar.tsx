@@ -24,7 +24,7 @@ const Sidebar = () => {
     }
 
     return (
-        <aside className={`${collapsed ? "w-16" : "w-64"} z-40 h-screen border-r border-border bg-sidebar transition-all duration-300`}>
+        <aside className={`${collapsed ? "w-16" : "w-64"} h-screen border-r border-border bg-sidebar transition-all duration-300`}>
             <div className="flex h-full flex-col">
                 {/* Logo */}
                 <div className="flex h-16 items-center justify-between border-b border-border px-4">
