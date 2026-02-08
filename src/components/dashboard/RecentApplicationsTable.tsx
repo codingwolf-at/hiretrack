@@ -1,8 +1,11 @@
+import { ChevronRight } from "lucide-react";
 // types
 import { Application, ApplicationStatus } from "@/types/application";
 // constants
 import { APPLICATION_KEYS, RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS, RECENT_APPLICATIONS_TABLE_FIELDS } from "@/constants/ui";
 // components
+import Link from "next/link";
+import Button from "../ui/Button";
 import StatusBadge from "../ui/StatusBadge";
 
 const RecentApplicationsTable = ({ applications }: { applications: Application[] }) => {
@@ -10,60 +13,68 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
     // TODO: give a min height to table (= height of 5 rows) so that it will help in empty state & when there are less rows
 
     const renderCellValue = (key: keyof Application, application: Application) => {
-        if (key === APPLICATION_KEYS.STATUS) {
-            return (
-                <StatusBadge status={application[key] as ApplicationStatus} />
-            )
-        } else if (key === APPLICATION_KEYS.ACTIONS) {
-            return (
-                <button
-                    type="button"
-                    className="text-blue-500 hover:underline"
-                >
-                    View
-                </button>
-            )
-        } else if (key === APPLICATION_KEYS.APPLIED_DATE) {
-            return (
-                <p className="text-sm text-gray-200">
-                    {application.applied_date
-                        ? new Date(application.applied_date).toLocaleDateString()
-                        : "—"}
-                </p>
-            );
-        } else {
-            return (
-                <p className="block text-sm text-gray-200">
-                    {application[key]}
-                </p>
-            )
+        switch (key) {
+            case APPLICATION_KEYS.STATUS:
+                return (
+                    <StatusBadge status={application.status as ApplicationStatus} />
+                );
+            case APPLICATION_KEYS.ACTIONS:
+                return (
+                    <button
+                        type="button"
+                        className="text-blue-500 hover:underline"
+                        aria-label="View Application"
+                        tabIndex={0}
+                    >
+                        View
+                    </button>
+                );
+            case APPLICATION_KEYS.APPLIED_DATE:
+                return (
+                    <p className="text-sm text-gray-200">
+                        {application.applied_date
+                            ? new Date(application.applied_date).toLocaleDateString()
+                            : "—"}
+                    </p>
+                );
+            default:
+                return (
+                    <p className="block text-sm text-gray-200">
+                        {application[key] ?? "—"}
+                    </p>
+                );
         }
     };
 
+    // TODO revamp status pills and add actions dropdown
+
     return (
-        <div className="rounded-lg">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h3 className="text-lg font-semibold text-white">Recent Applications</h3>
-                <button className="cursor-pointer text-blue-500 font-medium hover:underline">View all</button>
+        <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border pt-6 shadow-sm ">
+            <div className="flex flex-row items-center justify-between border-b border-border pb-4 px-6 [.border-b]:pb-6">
+                <h3 className="leading-none font-semibold text-lg text-foreground">Recent Applications</h3>
+                <Link href="/applications">
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                        View all
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                    </Button>
+                </Link>
             </div>
-            <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-transparent rounded-lg bg-clip-border">
-                <table className="w-full text-left table-auto min-w-max">
-                    <thead>
-                        <tr>
+            <div className="p-0 relative w-full overflow-x-auto">
+                <table className="w-full caption-bottom text-sm">
+                    <thead className="[&_tr]:border-b">
+                        <tr className="data-[state=selected]:bg-muted border-b transition-colors border-border hover:bg-transparent">
                             {RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS.map(el => (
-                                <th key={el} className="px-6 py-4 border-b text-gray-400 uppercase text-xs tracking-wide bg-transparent border-white/10">
-                                    <p className="block font-normal leading-none text-gray-400 uppercase tracking-wide text-xs">
-                                        {el}
-                                    </p>
+                                <th key={el} className="h-10 px-4 text-left align-middle font-medium whitespace-nowrap text-muted-foreground">
+                                    {el}
                                 </th>
                             ))}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="[&_tr:last-child]:border-0">
                         {applications.map(application => (
-                            <tr key={application.id} className="hover:bg-white/3 transition-colors">
+                            <tr key={application.id} className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors border-border cursor-pointer">
                                 {RECENT_APPLICATIONS_TABLE_FIELDS.map((el) => (
-                                    <td key={el} className="px-6 py-4 border-b border-white/5">
+                                    <td key={el} className="p-4 align-middle whitespace-nowrap text-muted-foreground">
                                         {renderCellValue(el as keyof Application, application)}
                                     </td>
                                 ))}

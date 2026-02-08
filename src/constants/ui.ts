@@ -113,7 +113,7 @@ export const APPLICATION_KEYS = {
 
 export const RECENT_APPLICATIONS_TABLE_FIELDS = ["company_name", "role", "status", "applied_date", "actions"];
 
-export const RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS = ["Company", "Role", "Status", "Applied", ""];
+export const RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS = ["Company", "Role", "Status", "Applied", "Actions"];
 
 export const APPLICATION_MODES = {
     CREATE: 'create',
