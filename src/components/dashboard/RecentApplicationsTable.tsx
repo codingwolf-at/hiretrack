@@ -1,4 +1,6 @@
-import { ChevronRight } from "lucide-react";
+"use client";
+
+import { ChevronRight, EllipsisVerticalIcon } from "lucide-react";
 // types
 import { Application, ApplicationStatus } from "@/types/application";
 // constants
@@ -6,9 +8,22 @@ import { APPLICATION_KEYS, RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS, RECENT_APPL
 // components
 import Link from "next/link";
 import Button from "../ui/Button";
+import Dropdown from "../ui/Dropdown";
 import StatusBadge from "../ui/StatusBadge";
 
 const RecentApplicationsTable = ({ applications }: { applications: Application[] }) => {
+
+    // TODO: optimize this
+    const dropdownOptions = [
+        {
+            label: "Edit",
+            value: "edit",
+        },
+        {
+            label: "Delete",
+            value: "delete",
+        },
+    ]
 
     // TODO: give a min height to table (= height of 5 rows) so that it will help in empty state & when there are less rows
 
@@ -20,14 +35,14 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                 );
             case APPLICATION_KEYS.ACTIONS:
                 return (
-                    <button
-                        type="button"
-                        className="text-blue-500 hover:underline"
-                        aria-label="View Application"
-                        tabIndex={0}
-                    >
-                        View
-                    </button>
+                    <Dropdown 
+                        options={dropdownOptions}
+                        onChange={() => {}}
+                        showChevron={false}
+                        iconTrigger={EllipsisVerticalIcon}
+                        wrapperClasses='w-12'
+                        dropdownContentClasses="w-24 right-0"
+                    />
                 );
             case APPLICATION_KEYS.APPLIED_DATE:
                 return (
@@ -43,13 +58,11 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                         {application[key] ?? "—"}
                     </p>
                 );
-        }
+        };
     };
 
-    // TODO add actions dropdown
-
     return (
-        <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border pt-6 shadow-sm ">
+        <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border pt-6 shadow-sm">
             <div className="flex flex-row items-center justify-between border-b border-border pb-4 px-6 [.border-b]:pb-6">
                 <h3 className="leading-none font-semibold text-lg text-foreground">Recent Applications</h3>
                 <Link href="/applications">
@@ -59,7 +72,7 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                     </Button>
                 </Link>
             </div>
-            <div className="p-0 relative w-full overflow-x-auto">
+            <div className="p-0 relative w-full">
                 <table className="w-full caption-bottom text-sm">
                     <thead className="[&_tr]:border-b">
                         <tr className="data-[state=selected]:bg-muted border-b transition-colors border-border hover:bg-transparent">

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, LucideIcon } from "lucide-react";
+// helper
+import { mergeClass } from "@/lib/ui";
+// components 
 import Button from "./Button";
 
 type DropdownOption = {
@@ -15,13 +18,29 @@ type DropdownProps = {
     placeholder?: string;
     onChange: (value: string) => void;
     disabled?: boolean;
+    showChevron?: boolean;
+    dropdownContentClasses?: string;
+    iconTrigger?: LucideIcon
+    wrapperClasses?: string;
 };
 
-const Dropdown = ({ options, selectedValue, placeholder, onChange, disabled = false }: DropdownProps) => {
+const Dropdown = ({
+    options,
+    selectedValue,
+    placeholder,
+    onChange,
+    disabled = false,
+    showChevron = true,
+    dropdownContentClasses = "",
+    iconTrigger,
+    wrapperClasses = ""
+}: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
 
     const ref = useRef<HTMLDivElement>(null);
+
+    const IconTrigger = iconTrigger;
 
     useEffect(() => {
         const handler = (e: MouseEvent) => {
@@ -48,24 +67,29 @@ const Dropdown = ({ options, selectedValue, placeholder, onChange, disabled = fa
     };
 
     return (
-        <div ref={ref} className="relative w-full">
+        <div ref={ref} className={mergeClass("relative w-full", wrapperClasses)}>
             <Button
                 type="button"
                 onClick={toggleDropdown}
                 className="w-full justify-between"
-                variant="outline"
+                variant="secondary"
                 disabled={disabled}
             >
-                {selectedValueLabel ? (
+                {IconTrigger && <IconTrigger />}
+                {selectedValueLabel && (
                     selectedValueLabel
-                ) : <span className="text-muted-foreground">{placeholder}</span>}
-                {isOpen
-                    ? <ChevronUpIcon />
-                    : <ChevronDownIcon />
-                }
+                )}
+                {!selectedValueLabel && placeholder && placeholder?.length > 0 && (
+                    <span className="text-muted-foreground">{placeholder}</span>
+                )}
+                {showChevron && (
+                    isOpen
+                        ? <ChevronUpIcon />
+                        : <ChevronDownIcon />
+                )}
             </Button>
             {isOpen && (
-                <div className="bg-card border border-border w-full rounded-md shadow-md absolute top-10 py-1">
+                <div className={mergeClass("bg-card border border-border w-full rounded-md shadow-md absolute top-10 py-1 z-10", dropdownContentClasses)}>
                     {options.map(el => (
                         <div
                             key={el.value}
