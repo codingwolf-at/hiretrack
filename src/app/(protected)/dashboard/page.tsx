@@ -3,7 +3,6 @@ import { getApplicationsCountByStatus } from "@/lib/ui";
 import { getUserApplications } from "@/lib/db/applications";
 // components
 import StatCards from "./StatCards";
-import Panel from "@/components/ui/Panel";
 import RecentApplicationsTable from "@/components/dashboard/RecentApplicationsTable";
 
 const Page = async () => {
