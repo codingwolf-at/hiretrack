@@ -16,13 +16,21 @@ type ButtonSize =
     | "icon-sm"
     | "icon-lg";
 
+type ButtonType = 
+    | "submit"
+    | "button"
+    | "reset"
+    | undefined
+
 type ButtonProps = {
     variant?: ButtonVariant;
     size?: ButtonSize;
     className?: string;
     children: React.ReactNode;
-    onClick: () => void;
+    onClick?: () => void;
     disabled?: boolean;
+    type?: ButtonType;
+    form?: string;
 };
 
 const variantStyleMap = {
@@ -52,7 +60,7 @@ const baseStyles =
     "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] " +
     "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
 
-const Button = ({ className, variant = "default", size = "default", children, onClick, disabled = false }: ButtonProps) => {
+const Button = ({ className, variant = "default", size = "default", children, onClick, disabled = false, type, form }: ButtonProps) => {
     return (
         <button
             className={mergeClass(
@@ -63,6 +71,8 @@ const Button = ({ className, variant = "default", size = "default", children, on
             )}
             onClick={onClick}
             disabled={disabled}
+            type={type}
+            form={form}
         >
             {children}
         </button>
