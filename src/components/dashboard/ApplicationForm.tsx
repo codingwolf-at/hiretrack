@@ -1,10 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 // types
 import { ApplicationFormState, ApplicationStatus } from "@/types/application";
 // constants
 import { APPLICATION_FORM_STRINGS, APPLICATION_MODES, applicationInitialState, STATUS_DROPDOWN_OPTIONS } from "@/constants/ui";
+// actions
+import { createApplicationAction } from "@/actions/applicationActions";
 // components
 import Label from "../ui/Label";
 import Input from "../ui/Input";
@@ -16,13 +19,9 @@ import Dropdown from "../ui/Dropdown";
 type ApplicationFormProps = {
     mode: typeof APPLICATION_MODES[keyof typeof APPLICATION_MODES];
     initialData?: ApplicationFormState;
-    // onSuccess: () => void;
     onClose: () => void;
     active: boolean;
 };
-
-// TODO: add loading
-// TODO: add submit button validation
 
 const ApplicationForm = ({
     mode = APPLICATION_MODES.CREATE,
@@ -34,9 +33,10 @@ const ApplicationForm = ({
     const [formData, setFormData] = useState(() => initialData);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const router = useRouter();
+
     useEffect(() => {
         if (active) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setFormData(initialData);
         }
     }, [active, initialData]);
@@ -68,10 +68,18 @@ const ApplicationForm = ({
         }));
     };
 
-    const handleSubmit = () => {
-        setIsSubmitting(true);
-        console.log('FORM SUBMITTED:', formData);
-        setIsSubmitting(false);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            setIsSubmitting(true);
+            await createApplicationAction(formData);
+            onClose();
+            router.refresh();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -95,13 +103,13 @@ const ApplicationForm = ({
                     <Label htmlFor="company_name" required>
                         Company Name
                     </Label>
-                    <Input id="company_name" value={formData.company_name} placeholder="e.g., Google" onChange={handleChange} />
+                    <Input id="company_name" value={formData.company_name} placeholder="e.g., Google" onChange={handleChange} disabled={isSubmitting} />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="role" required>
                         Role
                     </Label>
-                    <Input id="role" value={formData.role} placeholder="e.g., Senior Frontend Developer" onChange={handleChange} />
+                    <Input id="role" value={formData.role} placeholder="e.g., Senior Frontend Developer" onChange={handleChange} disabled={isSubmitting} />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="status" required>
@@ -111,31 +119,32 @@ const ApplicationForm = ({
                         options={STATUS_DROPDOWN_OPTIONS}
                         selectedValue={formData.status}
                         onChange={(value: string) => handleDropdownChange(value as ApplicationStatus)}
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="applied_date" required>
                         Date Applied
                     </Label>
-                    <Input id="applied_date" value={formData.applied_date} type="date" onChange={handleChange} />
+                    <Input id="applied_date" value={formData.applied_date} type="date" onChange={handleChange} disabled={isSubmitting} />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="location">
                         Location
                     </Label>
-                    <Input id="location" value={formData.location || ""} placeholder="e.g., Gurugram or Remote" onChange={handleChange} />
+                    <Input id="location" value={formData.location || ""} placeholder="e.g., Gurugram or Remote" onChange={handleChange} disabled={isSubmitting} />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="job_url">
                         Job URL
                     </Label>
-                    <Input id="job_url" value={formData.job_url || ""} placeholder="https://..." type="url" onChange={handleChange} />
+                    <Input id="job_url" value={formData.job_url || ""} placeholder="https://..." type="url" onChange={handleChange} disabled={isSubmitting} />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="salary_range">
                         Salary Range
                     </Label>
-                    <Input id="salary_range" value={formData.salary_range || ""} placeholder="e.g., 25LPA" type="text" onChange={handleChange} />
+                    <Input id="salary_range" value={formData.salary_range || ""} placeholder="e.g., 25LPA" type="text" onChange={handleChange} disabled={isSubmitting} />
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="notes">
@@ -146,6 +155,7 @@ const ApplicationForm = ({
                         value={formData.notes || ""}
                         placeholder="Add any personal notes about this opportunity..."
                         onChange={handleChange}
+                        disabled={isSubmitting}
                     />
                 </div>
             </form>
@@ -159,7 +169,7 @@ const ApplicationForm = ({
                     form="application-form"
                     className="bg-accent text-accent-foreground hover:bg-accent/90"
                     disabled={isSubmitDisabled}
-                    onClick={handleSubmit}
+                    loading={isSubmitting}
                 >
                     Submit
                 </Button>
