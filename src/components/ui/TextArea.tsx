@@ -6,6 +6,7 @@ type TextAreaProps = {
     className?: string;
     placeholder?: string;
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    disabled?: boolean;
 };
 
 const TextArea = ({
@@ -13,7 +14,8 @@ const TextArea = ({
     value,
     className,
     placeholder,
-    onChange
+    onChange,
+    disabled = false
 }: TextAreaProps) => {
     return (
         <textarea 
@@ -28,6 +30,7 @@ const TextArea = ({
                 )
             }
             onChange={onChange}
+            disabled={disabled}
         />
     );
 };

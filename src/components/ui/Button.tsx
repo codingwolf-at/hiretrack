@@ -1,4 +1,5 @@
 import { mergeClass } from "@/lib/ui";
+import Spinner from "./Spinner";
 
 type ButtonVariant =
     | "default"
@@ -31,6 +32,7 @@ type ButtonProps = {
     disabled?: boolean;
     type?: ButtonType;
     form?: string;
+    loading?: boolean;
 };
 
 const variantStyleMap = {
@@ -60,7 +62,7 @@ const baseStyles =
     "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] " +
     "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
 
-const Button = ({ className, variant = "default", size = "default", children, onClick, disabled = false, type, form }: ButtonProps) => {
+const Button = ({ className, variant = "default", size = "default", children, onClick, disabled = false, type, form, loading }: ButtonProps) => {
     return (
         <button
             className={mergeClass(
@@ -74,7 +76,7 @@ const Button = ({ className, variant = "default", size = "default", children, on
             type={type}
             form={form}
         >
-            {children}
+            {loading? <Spinner/> : children}
         </button>
     );
 }

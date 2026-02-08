@@ -14,9 +14,10 @@ type DropdownProps = {
     selectedValue?: DropdownOption["value"];
     placeholder?: string;
     onChange: (value: string) => void;
+    disabled?: boolean;
 };
 
-const Dropdown = ({ options, selectedValue, placeholder, onChange }: DropdownProps) => {
+const Dropdown = ({ options, selectedValue, placeholder, onChange, disabled = false }: DropdownProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -53,6 +54,7 @@ const Dropdown = ({ options, selectedValue, placeholder, onChange }: DropdownPro
                 onClick={toggleDropdown}
                 className="w-full justify-between"
                 variant="outline"
+                disabled={disabled}
             >
                 {selectedValueLabel ? (
                     selectedValueLabel
