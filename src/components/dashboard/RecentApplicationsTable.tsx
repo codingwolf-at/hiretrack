@@ -46,7 +46,7 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
         }
     };
 
-    // TODO revamp status pills and add actions dropdown
+    // TODO add actions dropdown
 
     return (
         <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border pt-6 shadow-sm ">
