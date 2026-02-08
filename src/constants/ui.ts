@@ -1,3 +1,4 @@
+import { ApplicationFormState } from "@/types/application";
 import { Briefcase, Calendar, LayoutDashboard, Settings } from "lucide-react";
 
 export const SIDEBAR_LIST_ITEMS = [
@@ -51,6 +52,41 @@ export const APPLICATION_STATUS_LABEL = {
     [APPLICATION_STATUS.WITHDRAWN]: 'Withdrawn'
 };
 
+export const STATUS_DROPDOWN_OPTIONS = [
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.APPLIED],
+        value: APPLICATION_STATUS.APPLIED
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.HR],
+        value: APPLICATION_STATUS.HR
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.TECHNICAL],
+        value: APPLICATION_STATUS.TECHNICAL
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.FINAL],
+        value: APPLICATION_STATUS.FINAL
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.OFFER],
+        value: APPLICATION_STATUS.OFFER
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.ACCEPTED],
+        value: APPLICATION_STATUS.ACCEPTED
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.REJECTED],
+        value: APPLICATION_STATUS.REJECTED
+    },
+    {
+        label: APPLICATION_STATUS_LABEL[APPLICATION_STATUS.WITHDRAWN],
+        value: APPLICATION_STATUS.WITHDRAWN
+    },
+];
+
 export const IN_PROGRESS_STATUS = [
     APPLICATION_STATUS.APPLIED,
     APPLICATION_STATUS.HR,
@@ -78,3 +114,30 @@ export const APPLICATION_KEYS = {
 export const RECENT_APPLICATIONS_TABLE_FIELDS = ["company_name", "role", "status", "applied_date", "actions"];
 
 export const RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS = ["Company", "Role", "Status", "Applied", ""];
+
+export const APPLICATION_MODES = {
+    CREATE: 'create',
+    EDIT: 'edit'
+} as const;
+
+export const APPLICATION_FORM_STRINGS = {
+    [APPLICATION_MODES.CREATE]: {
+        heading: 'Add New Application',
+        subHeading: 'Fill in the details of your job application.'
+    },
+    [APPLICATION_MODES.EDIT]: {
+        heading: 'Edit Application',
+        subHeading: 'Update the details of your job application.'
+    }
+};
+
+export const applicationInitialState: ApplicationFormState = {
+    company_name: "",
+    role: "",
+    status: "applied",
+    applied_date: "",
+    location: "",
+    job_url: "",
+    salary_range: "",
+    notes: "",
+};

@@ -1,4 +1,4 @@
-export type ApplicationStatus =  
+export type ApplicationStatus =
     | "applied"
     | "hr"
     | "technical"
@@ -26,4 +26,15 @@ export type Application = {
 
     created_at: string;
     updated_at: string;
+};
+
+export type ApplicationFormState = {
+    company_name: string;
+    role: string;
+    status: ApplicationStatus;
+    applied_date: string; // ISO yyyy-mm-dd
+    location?: string;
+    job_url?: string;
+    salary_range?: string;
+    notes?: string;
 };

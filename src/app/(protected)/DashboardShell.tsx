@@ -2,9 +2,13 @@
 
 import React, { useCallback, useState } from "react";
 import type { User } from "@supabase/supabase-js";
+// constants
+import { APPLICATION_MODES } from "@/constants/ui";
+// components
 import Topbar from "@/components/layout/Topbar";
-import SlideOver from "@/components/layout/SlideOver";
 import Sidebar from "@/components/layout/Sidebar";
+import SlideOver from "@/components/layout/SlideOver";
+import ApplicationForm from "@/components/dashboard/ApplicationForm";
 
 type DashboardShellProps = {
     children: React.ReactNode;
@@ -18,9 +22,9 @@ const DashboardShell = ({ children, user }: DashboardShellProps) => {
         setIsSlideOverOpen(false);
     }, []);
 
-    const openSlideOver = () => {
+    const openSlideOver = useCallback(() => {
         setIsSlideOverOpen(true);
-    }
+    }, []);
 
     return (
         <main className="flex min-h-screen w-full bg-background">
@@ -30,9 +34,11 @@ const DashboardShell = ({ children, user }: DashboardShellProps) => {
                 {children}
             </div>
             <SlideOver active={isSlideOverOpen} onClose={closeSlideOver}>
-                <p>
-                    testing slide over compo
-                </p>
+                <ApplicationForm
+                    mode={APPLICATION_MODES.CREATE}
+                    onClose={closeSlideOver}
+                    active={isSlideOverOpen}
+                />
             </SlideOver>
         </main>
     );
