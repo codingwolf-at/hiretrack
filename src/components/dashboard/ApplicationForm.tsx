@@ -10,7 +10,7 @@ import { APPLICATION_FORM_STRINGS, APPLICATION_MODES, STATUS_DROPDOWN_OPTIONS } 
 // hooks
 import useApplicationUI from "@/hooks/useApplicationUI";
 // actions
-import { createApplicationAction } from "@/actions/applicationActions";
+import { createApplicationAction, updateApplicationAction } from "@/actions/applicationActions";
 // components
 import Label from "../ui/Label";
 import Input from "../ui/Input";
@@ -20,10 +20,11 @@ import Dropdown from "../ui/Dropdown";
 
 const ApplicationForm = () => {
 
-    const { slideOverMode, closeSlideOver, selectedApplication } = useApplicationUI();
+    const { slideOverMode, closeSlideOver, selectedApplication, selectedApplicationId } = useApplicationUI();
 
     const [formData, setFormData] = useState(() => selectedApplication);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isFormDirty, setIsFormDirty] = useState(false);
 
     const router = useRouter();
 
@@ -32,18 +33,23 @@ const ApplicationForm = () => {
     useEffect(() => {
         if (active) {
             setFormData(selectedApplication);
+            setIsFormDirty(false);
         }
     }, [active, selectedApplication])
 
     const isSubmitDisabled = useMemo(() => {
-        const { company_name, role, applied_date } = formData;
-        return (
-            !company_name.trim() ||
-            !role.trim() ||
-            !applied_date ||
-            isSubmitting
-        );
-    }, [formData, isSubmitting]);
+        const company = formData.company_name.trim();
+        const role = formData.role.trim();
+        const date = formData.applied_date;
+
+        const hasEmptyRequiredFields = !company || !role || !date;
+
+        const isEditMode = slideOverMode === APPLICATION_MODES.EDIT;
+
+        const isUnchanged = isEditMode && !isFormDirty;
+
+        return hasEmptyRequiredFields || isSubmitting || isUnchanged;
+    }, [formData, isSubmitting, slideOverMode, isFormDirty]);
 
     const pageStrings = APPLICATION_FORM_STRINGS[slideOverMode ?? APPLICATION_MODES.CREATE];
 
@@ -53,6 +59,7 @@ const ApplicationForm = () => {
             ...prev,
             [id]: value,
         }));
+        setIsFormDirty(true);
     };
 
     const handleDropdownChange = (status: ApplicationStatus) => {
@@ -60,13 +67,18 @@ const ApplicationForm = () => {
             ...prev,
             status
         }));
+        setIsFormDirty(true);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             setIsSubmitting(true);
-            await createApplicationAction(formData);
+            if (slideOverMode === APPLICATION_MODES.CREATE) {
+                await createApplicationAction(formData);
+            } else {
+                await updateApplicationAction(selectedApplicationId, formData);
+            }
             closeSlideOver();
             router.refresh();
         } catch (err) {
@@ -77,10 +89,14 @@ const ApplicationForm = () => {
     };
 
     const openUrl = () => {
-        window.open(formData.job_url, "_blank", "noopener,noreferrer")
-    };
+        if (!formData.job_url) return;
 
-    // TODO: add validation for URL
+        const url = formData.job_url.startsWith("http")
+            ? formData.job_url
+            : `https://${formData.job_url}`;
+
+        window.open(url, "_blank", "noopener,noreferrer");
+    };
 
     return (
         <main className="p-4 flex flex-col gap-4 min-h-screen">
@@ -177,7 +193,7 @@ const ApplicationForm = () => {
                     disabled={isSubmitDisabled}
                     loading={isSubmitting}
                 >
-                    Submit
+                    {pageStrings.mainCTA}
                 </Button>
             </footer>
         </main>

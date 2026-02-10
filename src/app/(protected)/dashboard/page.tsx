@@ -16,6 +16,8 @@ const Page = async () => {
     // TODO: look into v0.dev & stich UI examples to improve the UI & UX further
     // TODO: put thick borders on dropdown & inputs etc
 
+    // TODO: add a full page loader while fetching initial data
+
     return (
         <main className=" p-6">
             <StatCards 

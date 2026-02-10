@@ -19,10 +19,10 @@ export const getApplicationsCountByStatus = (applications: Application[]) => {
 
 export const getInitials = (name: string): string =>
     name
-      .trim()
-      .split(/\s+/)
-      .map(word => word.charAt(0).toUpperCase())
-      .join("");
+        .trim()
+        .split(/\s+/)
+        .map(word => word.charAt(0).toUpperCase())
+        .join("");
 
 export const mergeClass = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
@@ -36,4 +36,15 @@ export const mapApplicationToFormState = (app: Application): ApplicationFormStat
     job_url: app.job_url ?? "",
     salary_range: app.salary_range ?? "",
     notes: app.notes ?? "",
+});
+
+export const mapFormToDB = (data: ApplicationFormState) => ({
+    company_name: data.company_name.trim(),
+    role: data.role.trim(),
+    status: data.status,
+    applied_date: data.applied_date,
+    location: data.location || null,
+    job_url: data.job_url || null,
+    salary_range: data.salary_range || null,
+    notes: data.notes || null,
 });

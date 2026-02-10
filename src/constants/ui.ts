@@ -123,11 +123,13 @@ export const APPLICATION_MODES = {
 export const APPLICATION_FORM_STRINGS = {
     [APPLICATION_MODES.CREATE]: {
         heading: 'Add New Application',
-        subHeading: 'Fill in the details of your job application.'
+        subHeading: 'Fill in the details of your job application.',
+        mainCTA: "Create"
     },
     [APPLICATION_MODES.EDIT]: {
         heading: 'Edit Application',
-        subHeading: 'Update the details of your job application.'
+        subHeading: 'Update the details of your job application.',
+        mainCTA: "Update"
     }
 };
 
