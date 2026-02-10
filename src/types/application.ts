@@ -1,4 +1,4 @@
-import { APPLICATION_MODES } from "@/constants/ui";
+import { APPLICATION_MODES, TABLE_ACTIONS } from "@/constants/ui";
 
 export type ApplicationStatus =
     | "applied"
@@ -22,7 +22,7 @@ export type Application = {
 
     status: ApplicationStatus;
 
-    applied_date: string | null;
+    applied_date: string;
     salary_range: string | null;
     notes: string | null;
 
@@ -41,4 +41,8 @@ export type ApplicationFormState = {
     notes?: string;
 };
 
+export type ApplicationIDTypes = string | null;
+
 export type ApplicationModeTypes = typeof APPLICATION_MODES[keyof typeof APPLICATION_MODES] | null;
+
+export type TableActionsTypes = typeof TABLE_ACTIONS[keyof typeof TABLE_ACTIONS];

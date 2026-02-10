@@ -1,6 +1,6 @@
 import { twMerge } from 'tailwind-merge';
 import { clsx, type ClassValue } from 'clsx';
-import { Application } from "@/types/application";
+import { Application, ApplicationFormState } from "@/types/application";
 import { CLOSED_STATUS, IN_PROGRESS_STATUS, OFFER_STATUS } from "@/constants/ui";
 
 export const getApplicationsCountByStatus = (applications: Application[]) => {
@@ -25,3 +25,15 @@ export const getInitials = (name: string): string =>
       .join("");
 
 export const mergeClass = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
+
+
+export const mapApplicationToFormState = (app: Application): ApplicationFormState => ({
+    company_name: app.company_name,
+    role: app.role,
+    status: app.status,
+    applied_date: app.applied_date,
+    location: app.location ?? "",
+    job_url: app.job_url ?? "",
+    salary_range: app.salary_range ?? "",
+    notes: app.notes ?? "",
+});

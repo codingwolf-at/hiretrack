@@ -141,3 +141,24 @@ export const applicationInitialState: ApplicationFormState = {
     salary_range: "",
     notes: "",
 };
+
+export const TABLE_ACTIONS = {
+    VIEW_EDIT: 'view_edit',
+    DELETE: 'delete'
+};
+
+export const TABLE_ACTIONS_LABELS = {
+    [TABLE_ACTIONS.VIEW_EDIT]: "View & Edit",
+    [TABLE_ACTIONS.DELETE]: "Delete"
+};
+
+export const TABLE_ACTIONS_DROPDOWN_OPTIONS = [
+    {
+        label: TABLE_ACTIONS_LABELS[TABLE_ACTIONS.VIEW_EDIT],
+        value: TABLE_ACTIONS.VIEW_EDIT,
+    },
+    {
+        label: TABLE_ACTIONS_LABELS[TABLE_ACTIONS.DELETE],
+        value: TABLE_ACTIONS.DELETE,
+    },
+];

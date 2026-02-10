@@ -1,10 +1,12 @@
 "use client";
 
 import { ChevronRight, EllipsisVerticalIcon } from "lucide-react";
+// hooks
+import useApplicationUI from "@/hooks/useApplicationUI";
 // types
-import { Application, ApplicationStatus } from "@/types/application";
+import { Application, ApplicationStatus, TableActionsTypes } from "@/types/application";
 // constants
-import { APPLICATION_KEYS, RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS, RECENT_APPLICATIONS_TABLE_FIELDS } from "@/constants/ui";
+import { APPLICATION_KEYS, RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS, RECENT_APPLICATIONS_TABLE_FIELDS, TABLE_ACTIONS, TABLE_ACTIONS_DROPDOWN_OPTIONS } from "@/constants/ui";
 // components
 import Link from "next/link";
 import Button from "../ui/Button";
@@ -13,17 +15,17 @@ import StatusBadge from "../ui/StatusBadge";
 
 const RecentApplicationsTable = ({ applications }: { applications: Application[] }) => {
 
-    // TODO: optimize this
-    const dropdownOptions = [
-        {
-            label: "Edit",
-            value: "edit",
-        },
-        {
-            label: "Delete",
-            value: "delete",
-        },
-    ]
+    const { startEditApplication } = useApplicationUI();
+
+    const handleActions = (action: TableActionsTypes, application: Application) => {
+        if (action === TABLE_ACTIONS.VIEW_EDIT) {
+            startEditApplication(application)
+        }
+    };
+
+    const handleRowClick = (application: Application) => {
+        handleActions(TABLE_ACTIONS.VIEW_EDIT, application);
+    };
 
     // TODO: give a min height to table (= height of 5 rows) so that it will help in empty state & when there are less rows
 
@@ -36,8 +38,8 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
             case APPLICATION_KEYS.ACTIONS:
                 return (
                     <Dropdown 
-                        options={dropdownOptions}
-                        onChange={() => {}}
+                        options={TABLE_ACTIONS_DROPDOWN_OPTIONS}
+                        onChange={(action) => handleActions(action, application)}
                         showChevron={false}
                         iconTrigger={EllipsisVerticalIcon}
                         wrapperClasses='w-12'
@@ -85,7 +87,11 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                     </thead>
                     <tbody className="[&_tr:last-child]:border-0">
                         {applications.map(application => (
-                            <tr key={application.id} className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors border-border cursor-pointer">
+                            <tr 
+                                key={application.id} 
+                                className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors border-border cursor-pointer"
+                                onClick={() => handleRowClick(application)}
+                            >
                                 {RECENT_APPLICATIONS_TABLE_FIELDS.map((el) => (
                                     <td key={el} className="p-4 align-middle whitespace-nowrap text-muted-foreground">
                                         {renderCellValue(el as keyof Application, application)}

@@ -1,17 +1,22 @@
 "use client";
 
 import { createContext, useState } from "react";
+// constants
 import { APPLICATION_MODES, applicationInitialState } from "@/constants/ui";
-import { ApplicationFormState, ApplicationModeTypes } from "@/types/application";
+// types
+import { Application, ApplicationFormState, ApplicationIDTypes, ApplicationModeTypes } from "@/types/application";
+// helpers
+import { mapApplicationToFormState } from "@/lib/ui";
 
 type ApplicationContextState = {
     slideOverMode: ApplicationModeTypes;
     selectedApplication: ApplicationFormState;
+    selectedApplicationId: ApplicationIDTypes;
 };
 
 type ApplicationContextActions = {
     startCreateApplication: () => void;
-    startEditApplication: (app: ApplicationFormState) => void;
+    startEditApplication: (app: Application) => void;
     closeSlideOver: () => void;
 };
 
@@ -23,19 +28,22 @@ export const ApplicationUIProvider = ({ children }: { children: React.ReactNode;
     const [state, setState] = useState<ApplicationContextState>({
         slideOverMode: null,
         selectedApplication: applicationInitialState,
+        selectedApplicationId: null
     });
 
     const startCreateApplication = () => {
         setState({
             slideOverMode: APPLICATION_MODES.CREATE,
             selectedApplication: applicationInitialState,
+            selectedApplicationId: null
         });
     };
 
-    const startEditApplication = (app: ApplicationFormState) => {
+    const startEditApplication = (app: Application) => {
         setState({
             slideOverMode: APPLICATION_MODES.EDIT,
-            selectedApplication: app,
+            selectedApplication: mapApplicationToFormState(app),
+            selectedApplicationId: app.id
         });
     };
 
@@ -43,6 +51,8 @@ export const ApplicationUIProvider = ({ children }: { children: React.ReactNode;
         setState((prev) => ({
             ...prev,
             slideOverMode: null,
+            selectedApplication: applicationInitialState,
+            selectedApplicationId: null
         }));
     };
 
