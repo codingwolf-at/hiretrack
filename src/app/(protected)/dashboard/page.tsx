@@ -14,6 +14,7 @@ const Page = async () => {
     const recentApplications = applications.slice(0, 5);
 
     // TODO: look into v0.dev & stich UI examples to improve the UI & UX further
+    // TODO: put thick borders on dropdown & inputs etc
 
     return (
         <main className=" p-6">

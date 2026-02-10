@@ -71,7 +71,10 @@ const Button = ({ className, variant = "default", size = "default", children, on
                 sizeStyleMap[size],
                 className,
             )}
-            onClick={onClick}
+            onClick={(e) => {
+                e.stopPropagation();
+                onClick?.();
+            }}
             disabled={disabled}
             type={type}
             form={form}
