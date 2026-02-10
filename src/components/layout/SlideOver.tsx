@@ -1,18 +1,20 @@
 import { useEffect } from "react";
+// hooks
+import useApplicationUI from "@/hooks/useApplicationUI";
 
 type SlideOverProps = {
-    active: boolean;
-    onClose: () => void;
     children: React.ReactNode;
 };
 
-// TODO: make sure to reset/flush state basis on active since the component is not unmounting anymore 
+const SlideOver = ({ children }: SlideOverProps) => {
 
-const SlideOver = ({ active, onClose, children }: SlideOverProps) => {
+    const { slideOverMode, closeSlideOver } = useApplicationUI();
+
+    const active = !!slideOverMode;
 
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === "Escape") closeSlideOver();
         };
 
         if (active) {
@@ -29,7 +31,7 @@ const SlideOver = ({ active, onClose, children }: SlideOverProps) => {
             window.removeEventListener("keydown", handler);
 
         };
-    }, [active, onClose]);
+    }, [active, closeSlideOver]);
 
     return (
         <div
@@ -37,7 +39,7 @@ const SlideOver = ({ active, onClose, children }: SlideOverProps) => {
                 fixed inset-0 bg-black/50 z-50 transition-opacity duration-300
                 ${active ? "opacity-100" : "opacity-0 pointer-events-none"}
             `}
-            onClick={onClose}
+            onClick={closeSlideOver}
         >
             <div
                 className={`

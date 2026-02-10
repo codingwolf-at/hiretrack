@@ -1,45 +1,39 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ExternalLink, XIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 // types
-import { ApplicationFormState, ApplicationStatus } from "@/types/application";
+import { ApplicationStatus } from "@/types/application";
 // constants
-import { APPLICATION_FORM_STRINGS, APPLICATION_MODES, applicationInitialState, STATUS_DROPDOWN_OPTIONS } from "@/constants/ui";
+import { APPLICATION_FORM_STRINGS, APPLICATION_MODES, STATUS_DROPDOWN_OPTIONS } from "@/constants/ui";
+// hooks
+import useApplicationUI from "@/hooks/useApplicationUI";
 // actions
 import { createApplicationAction } from "@/actions/applicationActions";
 // components
 import Label from "../ui/Label";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { XIcon } from "lucide-react";
 import TextArea from "../ui/TextArea";
 import Dropdown from "../ui/Dropdown";
 
-type ApplicationFormProps = {
-    mode: typeof APPLICATION_MODES[keyof typeof APPLICATION_MODES];
-    initialData?: ApplicationFormState;
-    onClose: () => void;
-    active: boolean;
-};
+const ApplicationForm = () => {
 
-const ApplicationForm = ({
-    mode = APPLICATION_MODES.CREATE,
-    initialData = applicationInitialState,
-    onClose,
-    active
-}: ApplicationFormProps) => {
+    const { slideOverMode, closeSlideOver, selectedApplication } = useApplicationUI();
 
-    const [formData, setFormData] = useState(() => initialData);
+    const [formData, setFormData] = useState(() => selectedApplication);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const router = useRouter();
 
+    const active = !!slideOverMode;
+
     useEffect(() => {
         if (active) {
-            setFormData(initialData);
+            setFormData(selectedApplication);
         }
-    }, [active, initialData]);
+    }, [active, selectedApplication])
 
     const isSubmitDisabled = useMemo(() => {
         const { company_name, role, applied_date } = formData;
@@ -51,7 +45,7 @@ const ApplicationForm = ({
         );
     }, [formData, isSubmitting]);
 
-    const pageStrings = APPLICATION_FORM_STRINGS[mode];
+    const pageStrings = APPLICATION_FORM_STRINGS[slideOverMode ?? APPLICATION_MODES.CREATE];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
@@ -73,7 +67,7 @@ const ApplicationForm = ({
         try {
             setIsSubmitting(true);
             await createApplicationAction(formData);
-            onClose();
+            closeSlideOver();
             router.refresh();
         } catch (err) {
             console.error(err);
@@ -81,6 +75,12 @@ const ApplicationForm = ({
             setIsSubmitting(false);
         }
     };
+
+    const openUrl = () => {
+        window.open(formData.job_url, "_blank", "noopener,noreferrer")
+    };
+
+    // TODO: add validation for URL
 
     return (
         <main className="p-4 flex flex-col gap-4 min-h-screen">
@@ -93,7 +93,7 @@ const ApplicationForm = ({
                         {pageStrings.subHeading}
                     </p>
                 </div>
-                <Button variant="secondary" onClick={onClose} size="sm">
+                <Button variant="secondary" onClick={closeSlideOver} size="sm">
                     <XIcon />
                 </Button>
             </header>
@@ -138,7 +138,13 @@ const ApplicationForm = ({
                     <Label htmlFor="job_url">
                         Job URL
                     </Label>
-                    <Input id="job_url" value={formData.job_url || ""} placeholder="https://..." type="url" onChange={handleChange} disabled={isSubmitting} />
+                    <div className="flex gap-2">
+                        <Input id="job_url" value={formData.job_url || ""} placeholder="https://..." type="url" onChange={handleChange} disabled={isSubmitting} />
+                        <Button type="button" variant="default" disabled={!formData.job_url?.length} onClick={openUrl}>
+                            Visit
+                            <ExternalLink className="h-4 w-4" />
+                        </Button>
+                    </div>
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="salary_range">
@@ -161,7 +167,7 @@ const ApplicationForm = ({
             </form>
             <hr />
             <footer className="flex justify-between">
-                <Button variant="secondary" onClick={onClose}>
+                <Button variant="secondary" onClick={closeSlideOver}>
                     Close
                 </Button>
                 <Button

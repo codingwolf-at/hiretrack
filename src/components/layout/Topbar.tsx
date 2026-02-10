@@ -5,16 +5,19 @@ import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 // constants
 import { SIDEBAR_LIST_ITEMS } from "@/constants/ui";
+// hooks
+import useApplicationUI from "@/hooks/useApplicationUI";
 // components
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
 
 type TopbarProps = {
     user: User;
-    openSlideOver: () => void;
 };
 
-const Topbar = ({ user, openSlideOver }: TopbarProps ) => {
+const Topbar = ({ user }: TopbarProps ) => {
+
+    const { startCreateApplication } = useApplicationUI();
 
     const pathname = usePathname();
 
@@ -34,7 +37,7 @@ const Topbar = ({ user, openSlideOver }: TopbarProps ) => {
                 <Button
                     size="sm"
                     className="bg-accent text-accent-foreground hover:bg-accent/90"
-                    onClick={openSlideOver}
+                    onClick={startCreateApplication}
                 >
                     <Plus className="mr-2 h-4 w-4" />
                     <span className="hidden sm:inline">Add Application</span>

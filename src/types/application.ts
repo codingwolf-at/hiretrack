@@ -1,3 +1,5 @@
+import { APPLICATION_MODES } from "@/constants/ui";
+
 export type ApplicationStatus =
     | "applied"
     | "hr"
@@ -38,3 +40,5 @@ export type ApplicationFormState = {
     salary_range?: string;
     notes?: string;
 };
+
+export type ApplicationModeTypes = typeof APPLICATION_MODES[keyof typeof APPLICATION_MODES] | null;
