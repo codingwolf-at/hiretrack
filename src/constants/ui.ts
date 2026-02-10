@@ -164,3 +164,8 @@ export const TABLE_ACTIONS_DROPDOWN_OPTIONS = [
         value: TABLE_ACTIONS.DELETE,
     },
 ];
+
+export const DEMO_LOGIN_CREDS = {
+    EMAIL: "demo@hiretrack.app",
+    PASSWORD: "Hiretrack123!"
+};

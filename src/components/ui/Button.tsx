@@ -71,7 +71,7 @@ const Button = ({ className, variant = "default", size = "default", children, on
                 sizeStyleMap[size],
                 className,
             )}
-            onClick={(e) => {
+            onClick={loading ? () => {} : (e) => {
                 e.stopPropagation();
                 onClick?.();
             }}
