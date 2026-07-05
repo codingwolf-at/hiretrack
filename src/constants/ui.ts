@@ -1,4 +1,5 @@
 import { ApplicationFormState } from "@/types/application";
+import { InterviewFormState } from "@/types/interview";
 import { Briefcase, Calendar, LayoutDashboard, Settings } from "lucide-react";
 
 export const SIDEBAR_LIST_ITEMS = [
@@ -200,6 +201,117 @@ export const TABLE_ACTIONS_DROPDOWN_OPTIONS = [
         value: TABLE_ACTIONS.DELETE,
     },
 ];
+
+// statuses that imply an interview is (or should be) scheduled
+export const INTERVIEW_STAGE_STATUS = [
+    APPLICATION_STATUS.HR,
+    APPLICATION_STATUS.TECHNICAL,
+    APPLICATION_STATUS.FINAL
+];
+
+export const INTERVIEW_ROUND = {
+    HR: 'hr',
+    TECHNICAL: 'technical',
+    SYSTEM_DESIGN: 'system_design',
+    MANAGERIAL: 'managerial',
+    FINAL: 'final',
+    OTHER: 'other'
+} as const;
+
+export const INTERVIEW_ROUND_LABEL = {
+    [INTERVIEW_ROUND.HR]: "HR",
+    [INTERVIEW_ROUND.TECHNICAL]: "Technical",
+    [INTERVIEW_ROUND.SYSTEM_DESIGN]: "System Design",
+    [INTERVIEW_ROUND.MANAGERIAL]: "Managerial",
+    [INTERVIEW_ROUND.FINAL]: "Final",
+    [INTERVIEW_ROUND.OTHER]: "Other"
+};
+
+export const INTERVIEW_ROUND_DROPDOWN_OPTIONS = Object.values(INTERVIEW_ROUND).map(round => ({
+    label: INTERVIEW_ROUND_LABEL[round],
+    value: round
+}));
+
+export const INTERVIEW_OUTCOME = {
+    PENDING: 'pending',
+    PASSED: 'passed',
+    FAILED: 'failed',
+    CANCELLED: 'cancelled'
+} as const;
+
+export const INTERVIEW_OUTCOME_LABEL = {
+    [INTERVIEW_OUTCOME.PENDING]: "Pending",
+    [INTERVIEW_OUTCOME.PASSED]: "Passed",
+    [INTERVIEW_OUTCOME.FAILED]: "Failed",
+    [INTERVIEW_OUTCOME.CANCELLED]: "Cancelled"
+};
+
+export const INTERVIEW_OUTCOME_DROPDOWN_OPTIONS = Object.values(INTERVIEW_OUTCOME).map(outcome => ({
+    label: INTERVIEW_OUTCOME_LABEL[outcome],
+    value: outcome
+}));
+
+export const INTERVIEW_OUTCOME_BADGE_CLASSES = {
+    [INTERVIEW_OUTCOME.PENDING]: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    [INTERVIEW_OUTCOME.PASSED]: "bg-green-500/20 text-green-400 border-green-500/30",
+    [INTERVIEW_OUTCOME.FAILED]: "bg-red-500/20 text-red-400 border-red-500/30",
+    [INTERVIEW_OUTCOME.CANCELLED]: "bg-gray-500/20 text-gray-400 border-gray-500/30"
+};
+
+export const INTERVIEW_ROUND_BADGE_CLASSES = "bg-purple-500/20 text-purple-400 border-purple-500/30";
+
+export const interviewInitialState: InterviewFormState = {
+    application_id: "",
+    round: "technical",
+    scheduled_at: "",
+    location: "",
+    notes: "",
+    outcome: "pending"
+};
+
+export const INTERVIEW_FORM_STRINGS = {
+    [APPLICATION_MODES.CREATE]: {
+        heading: "Schedule Interview",
+        subHeading: "Add an interview round for one of your applications.",
+        mainCTA: "Schedule"
+    },
+    [APPLICATION_MODES.EDIT]: {
+        heading: "Edit Interview",
+        subHeading: "Update the details or outcome of this interview.",
+        mainCTA: "Update"
+    }
+};
+
+export const INTERVIEWS_PAGE_STRINGS = {
+    HEADING: "Interviews",
+    SUB_HEADING: "Upcoming and past interview rounds across your applications",
+    SCHEDULE_CTA: "Schedule Interview",
+    UPCOMING_HEADING: "Upcoming",
+    PAST_HEADING: "Past",
+    EMPTY_TITLE: "No interviews scheduled yet",
+    EMPTY_HINT: "Schedule your first interview to see it here.",
+    NO_UPCOMING: "No upcoming interviews.",
+    NO_PAST: "No past interviews."
+};
+
+export const DASHBOARD_INTERVIEWS_PANEL_STRINGS = {
+    HEADING: "Upcoming Interviews",
+    EMPTY_TITLE: "No upcoming interviews",
+    EMPTY_HINT: "Schedule interviews from your applications."
+};
+
+export const APPLICATION_INTERVIEWS_SECTION_STRINGS = {
+    HEADING: "Interviews",
+    EMPTY: "No interviews for this application yet.",
+    SCHEDULE_CTA: "Schedule interview"
+};
+
+export const DELETE_INTERVIEW_DIALOG = {
+    TITLE: "Delete interview",
+    DESCRIPTION: "This will permanently delete this interview. This action cannot be undone.",
+    CONFIRM: "Delete",
+    CANCEL: "Cancel"
+};
 
 export const DELETE_APPLICATION_DIALOG = {
     TITLE: "Delete application",

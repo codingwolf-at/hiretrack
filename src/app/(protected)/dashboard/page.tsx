@@ -1,13 +1,20 @@
 // helpers
 import { getApplicationsCountByStatus } from "@/lib/ui";
 import { getUserApplications } from "@/lib/db/applications";
+import { getUpcomingInterviews } from "@/lib/db/interviews";
 // components
 import StatCards from "./StatCards";
 import RecentApplicationsTable from "@/components/dashboard/RecentApplicationsTable";
+import UpcomingInterviews from "@/components/dashboard/UpcomingInterviews";
+
+const UPCOMING_INTERVIEWS_LIMIT = 5;
 
 const Page = async () => {
 
-    const applications = await getUserApplications();
+    const [applications, upcomingInterviews] = await Promise.all([
+        getUserApplications(),
+        getUpcomingInterviews(UPCOMING_INTERVIEWS_LIMIT),
+    ]);
 
     const { totalCount, inProgressCount, offerCount, closedCount } = getApplicationsCountByStatus(applications);
 
@@ -29,7 +36,7 @@ const Page = async () => {
                     <RecentApplicationsTable applications={recentApplications} />
                 </div>
                 <div className="lg:col-span-1">
-                    Interviews
+                    <UpcomingInterviews interviews={upcomingInterviews} />
                 </div>
             </div>
         </main>

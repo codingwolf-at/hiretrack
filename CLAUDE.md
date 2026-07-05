@@ -25,7 +25,7 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
-The DB schema is not yet version-controlled: the `applications` table and its RLS policies exist only in the Supabase project. A demo user matching `DEMO_LOGIN_CREDS` (`src/constants/ui.ts`) must exist for the demo-login button to work.
+The `applications` table and its RLS policies exist only in the Supabase project (DDL not yet committed — roadmap Phase 4). The `interviews` table's DDL **is** committed at `supabase/migrations/20260705120000_create_interviews.sql` but must be applied manually (Supabase SQL editor) — until then, interview reads return empty and interview writes fail. A demo user matching `DEMO_LOGIN_CREDS` (`src/constants/ui.ts`) must exist for the demo-login button to work.
 
 ## Tech stack
 
@@ -67,8 +67,8 @@ src/
 
 - New enums, labels, option lists, and UI strings go in `src/constants/ui.ts`; types in `src/types/`.
 - Compose Tailwind classes with `mergeClass` from `src/lib/ui.ts` (clsx + tailwind-merge); reuse the `src/components/ui/` primitives rather than styling raw elements.
-- The single entity today is `Application` (`src/types/application.ts`). Status buckets for metrics: `IN_PROGRESS_STATUS`, `OFFER_STATUS`, `CLOSED_STATUS` in constants.
+- Entities: `Application` (`src/types/application.ts`) and `Interview` (`src/types/interview.ts`, FK → applications, joined reads via `InterviewWithApplication`). Status buckets for metrics: `IN_PROGRESS_STATUS`, `OFFER_STATUS`, `CLOSED_STATUS`; interview-stage statuses: `INTERVIEW_STAGE_STATUS` — all in constants.
 
 ## Known gaps (don't be surprised by these)
 
-- Sidebar links `/interviews` and `/settings` point at routes that don't exist yet; the dashboard "Interviews" panel is placeholder text. These are tracked in `ROADMAP.md` (Phases 2–3) — check it before building so work lands in the intended order.
+- The sidebar's `/settings` link points at a route that doesn't exist yet (roadmap Phase 3). The `interviews` DB table must be applied manually from `supabase/migrations/` before the interviews UI is functional. Check `ROADMAP.md` before building so work lands in the intended order.

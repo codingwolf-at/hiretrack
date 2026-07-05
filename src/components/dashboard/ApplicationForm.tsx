@@ -1,30 +1,50 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ExternalLink, XIcon } from "lucide-react";
+import { CalendarPlus, ExternalLink, XIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 // types
 import { ApplicationStatus } from "@/types/application";
+import { InterviewWithApplication } from "@/types/interview";
 // constants
-import { APPLICATION_FORM_STRINGS, APPLICATION_MODES, STATUS_DROPDOWN_OPTIONS } from "@/constants/ui";
+import {
+    APPLICATION_FORM_STRINGS,
+    APPLICATION_INTERVIEWS_SECTION_STRINGS,
+    APPLICATION_MODES,
+    INTERVIEW_OUTCOME_BADGE_CLASSES,
+    INTERVIEW_OUTCOME_LABEL,
+    INTERVIEW_ROUND_BADGE_CLASSES,
+    INTERVIEW_ROUND_LABEL,
+    INTERVIEW_STAGE_STATUS,
+    STATUS_DROPDOWN_OPTIONS
+} from "@/constants/ui";
 // hooks
 import useApplicationUI from "@/hooks/useApplicationUI";
+// helpers
+import { formatInterviewDateTime } from "@/lib/ui";
 // actions
 import { createApplicationAction, updateApplicationAction } from "@/actions/applicationActions";
 // components
 import Label from "../ui/Label";
 import Input from "../ui/Input";
+import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import TextArea from "../ui/TextArea";
 import Dropdown from "../ui/Dropdown";
+import InterviewFormDialog from "../interviews/InterviewFormDialog";
 
-const ApplicationForm = () => {
+// who triggered the schedule dialog: manual keeps the slide-over open on
+// close; post_update closes it (it was the last step of saving)
+type ScheduleDialogSource = "manual" | "post_update" | null;
+
+const ApplicationForm = ({ interviews }: { interviews: InterviewWithApplication[] }) => {
 
     const { slideOverMode, closeSlideOver, selectedApplication, selectedApplicationId } = useApplicationUI();
 
     const [formData, setFormData] = useState(() => selectedApplication);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isFormDirty, setIsFormDirty] = useState(false);
+    const [scheduleDialogSource, setScheduleDialogSource] = useState<ScheduleDialogSource>(null);
 
     const router = useRouter();
 
@@ -36,6 +56,11 @@ const ApplicationForm = () => {
             setIsFormDirty(false);
         }
     }, [active, selectedApplication])
+
+    const applicationInterviews = useMemo(() => {
+        if (!selectedApplicationId) return [];
+        return interviews.filter(interview => interview.application_id === selectedApplicationId);
+    }, [interviews, selectedApplicationId]);
 
     const isSubmitDisabled = useMemo(() => {
         const company = formData.company_name.trim();
@@ -79,13 +104,30 @@ const ApplicationForm = () => {
             } else {
                 await updateApplicationAction(selectedApplicationId, formData);
             }
-            closeSlideOver();
+            // status just moved into an interview stage — prompt to schedule
+            // the interview before closing the slide-over
+            const movedToInterviewStage =
+                slideOverMode === APPLICATION_MODES.EDIT &&
+                INTERVIEW_STAGE_STATUS.includes(formData.status) &&
+                !INTERVIEW_STAGE_STATUS.includes(selectedApplication.status);
+
             router.refresh();
+            if (movedToInterviewStage) {
+                setScheduleDialogSource("post_update");
+            } else {
+                closeSlideOver();
+            }
         } catch (err) {
             console.error(err);
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleScheduleDialogClose = () => {
+        const source = scheduleDialogSource;
+        setScheduleDialogSource(null);
+        if (source === "post_update") closeSlideOver();
     };
 
     const openUrl = () => {
@@ -181,6 +223,40 @@ const ApplicationForm = () => {
                     />
                 </div>
             </form>
+            {slideOverMode === APPLICATION_MODES.EDIT && (
+                <>
+                    <hr />
+                    <section className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold text-foreground">{APPLICATION_INTERVIEWS_SECTION_STRINGS.HEADING}</p>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setScheduleDialogSource("manual")}
+                                disabled={isSubmitting}
+                            >
+                                <CalendarPlus className="w-4 h-4 mr-1" />
+                                {APPLICATION_INTERVIEWS_SECTION_STRINGS.SCHEDULE_CTA}
+                            </Button>
+                        </div>
+                        {applicationInterviews.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">{APPLICATION_INTERVIEWS_SECTION_STRINGS.EMPTY}</p>
+                        ) : (
+                            <div className="flex flex-col gap-2">
+                                {applicationInterviews.map(interview => (
+                                    <div key={interview.id} className="flex items-center justify-between gap-2 rounded-md border border-border p-2">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <Badge label={INTERVIEW_ROUND_LABEL[interview.round]} className={INTERVIEW_ROUND_BADGE_CLASSES} />
+                                            <span className="text-sm text-muted-foreground">{formatInterviewDateTime(interview.scheduled_at)}</span>
+                                        </div>
+                                        <Badge label={INTERVIEW_OUTCOME_LABEL[interview.outcome]} className={INTERVIEW_OUTCOME_BADGE_CLASSES[interview.outcome]} />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                </>
+            )}
             <hr />
             <footer className="flex justify-between">
                 <Button variant="secondary" onClick={closeSlideOver}>
@@ -196,6 +272,17 @@ const ApplicationForm = () => {
                     {pageStrings.mainCTA}
                 </Button>
             </footer>
+            {selectedApplicationId && (
+                <InterviewFormDialog
+                    open={!!scheduleDialogSource}
+                    onClose={handleScheduleDialogClose}
+                    applicationOptions={[{
+                        label: `${formData.company_name} — ${formData.role}`,
+                        value: selectedApplicationId
+                    }]}
+                    lockedApplicationId={selectedApplicationId}
+                />
+            )}
         </main>
     );
 };

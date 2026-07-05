@@ -1,6 +1,8 @@
 "use client";
 
 import type { User } from "@supabase/supabase-js";
+// types
+import { InterviewWithApplication } from "@/types/interview";
 // components
 import Topbar from "@/components/layout/Topbar";
 import Sidebar from "@/components/layout/Sidebar";
@@ -11,9 +13,10 @@ import { ApplicationUIProvider } from "@/context/ApplicationUIContext";
 type DashboardShellProps = {
     children: React.ReactNode;
     user: User;
+    interviews: InterviewWithApplication[];
 };
 
-const DashboardShell = ({ children, user }: DashboardShellProps) => {
+const DashboardShell = ({ children, user, interviews }: DashboardShellProps) => {
 
     return (
         <ApplicationUIProvider>
@@ -24,7 +27,7 @@ const DashboardShell = ({ children, user }: DashboardShellProps) => {
                     {children}
                 </div>
                 <SlideOver>
-                    <ApplicationForm />
+                    <ApplicationForm interviews={interviews} />
                 </SlideOver>
             </main>
         </ApplicationUIProvider>
