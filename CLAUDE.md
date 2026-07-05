@@ -42,7 +42,7 @@ Data flows one way: RSC fetch → client UI state → Server Action mutation →
 - **Reads** happen in React Server Components via helpers in `src/lib/db/` (e.g. `getUserApplications` in `src/lib/db/applications.ts`). Queries deliberately do **not** filter by `user_id` — Supabase RLS is the data-ownership boundary. Keep it that way; don't add manual user filters without a reason.
 - **Mutations** go exclusively through Server Actions in `src/actions/` (`applicationActions.ts`). Actions build a server Supabase client from cookies, sanitize input with `mapFormToDB` (`src/lib/ui.ts`), and throw on Supabase errors. Clients call the action, then `closeSlideOver()` + `router.refresh()`.
 - **Supabase clients**: `src/lib/supabase/supabaseClient.ts` (browser) vs `supabaseServer.ts` (server, cookie-backed). Never import the browser client in server code or vice versa.
-- **Auth gating**: the `(protected)` route group's `src/app/(protected)/layout.tsx` checks `getUser()` server-side and redirects to `/login`. There is **no `middleware.ts`** yet (session refresh is a known gap — roadmap Phase 1).
+- **Auth gating**: `src/proxy.ts` (Next 16's middleware) runs the `@supabase/ssr` session-refresh pattern on every request, redirects unauthenticated users to `/login`, and bounces authenticated users off `/login`, `/signup`, and `/` to `/dashboard`. The `(protected)` route group's `src/app/(protected)/layout.tsx` additionally checks `getUser()` server-side as defense in depth.
 - **UI orchestration**: the create/edit slide-over is driven by `ApplicationUIContext` (`src/context/ApplicationUIContext.tsx`) + the `useApplicationUI` hook — mode (`create`/`edit`), selected application, open/close. UI state lives here; data state stays server-side.
 
 ## Layout & conventions
@@ -53,8 +53,10 @@ src/
   app/           App Router: login/, (protected)/dashboard/
   components/
     ui/          Reusable primitives: Button, Input, Label, TextArea,
-                 Dropdown, StatusBadge, Card, Avatar, Spinner
-    dashboard/   Feature components (ApplicationForm, RecentApplicationsTable)
+                 Dropdown, StatusBadge, Card, Avatar, Spinner, ConfirmDialog
+    auth/        AuthForm (shared login/signup UI, mode-driven)
+    dashboard/   Feature components (ApplicationForm, RecentApplicationsTable,
+                 ApplicationsTable)
     layout/      Shell: Sidebar, Topbar, SlideOver
   constants/ui.ts  ALL app constants: status enums + labels, sidebar items,
                    table columns, form strings, demo creds
@@ -69,4 +71,4 @@ src/
 
 ## Known gaps (don't be surprised by these)
 
-- Sidebar links `/applications`, `/interviews`, `/settings` and login's `/signup` link point at routes that don't exist yet; the dashboard "Interviews" panel is placeholder text; the table's "Delete" action is unwired (no delete Server Action). These are all tracked in `ROADMAP.md` — check it before building so work lands in the intended order.
+- Sidebar links `/interviews` and `/settings` point at routes that don't exist yet; the dashboard "Interviews" panel is placeholder text. These are tracked in `ROADMAP.md` (Phases 2–3) — check it before building so work lands in the intended order.

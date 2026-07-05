@@ -115,6 +115,42 @@ export const RECENT_APPLICATIONS_TABLE_FIELDS = ["company_name", "role", "status
 
 export const RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS = ["Company", "Role", "Status", "Applied", "Actions"];
 
+export const APPLICATIONS_TABLE_EMPTY_STATE = {
+    TITLE: "No applications yet",
+    HINT: "Create your first application to get started."
+};
+
+export const APPLICATIONS_TABLE_NO_MATCH_STATE = {
+    TITLE: "No applications match your filters",
+    HINT: "Try adjusting the search or status filter."
+};
+
+export const APPLICATIONS_PAGE_SIZE = 10;
+
+export const STATUS_FILTER_ALL = "all";
+
+export const STATUS_FILTER_DROPDOWN_OPTIONS = [
+    {
+        label: "All statuses",
+        value: STATUS_FILTER_ALL
+    },
+    ...STATUS_DROPDOWN_OPTIONS
+];
+
+export const APPLICATIONS_TABLE_COLUMNS = [
+    { key: "company_name", label: "Company", sortable: true },
+    { key: "role", label: "Role", sortable: true },
+    { key: "status", label: "Status", sortable: true },
+    { key: "applied_date", label: "Applied", sortable: true },
+    { key: "actions", label: "Actions", sortable: false },
+];
+
+export const APPLICATIONS_PAGE_STRINGS = {
+    HEADING: "Applications",
+    SUB_HEADING: "All your job applications in one place",
+    SEARCH_PLACEHOLDER: "Search company, role, or location..."
+};
+
 export const APPLICATION_MODES = {
     CREATE: 'create',
     EDIT: 'edit'
@@ -164,6 +200,42 @@ export const TABLE_ACTIONS_DROPDOWN_OPTIONS = [
         value: TABLE_ACTIONS.DELETE,
     },
 ];
+
+export const DELETE_APPLICATION_DIALOG = {
+    TITLE: "Delete application",
+    DESCRIPTION: "This will permanently delete this application. This action cannot be undone.",
+    CONFIRM: "Delete",
+    CANCEL: "Cancel"
+};
+
+export const AUTH_MODES = {
+    LOGIN: 'login',
+    SIGNUP: 'signup'
+} as const;
+
+export const AUTH_FORM_STRINGS = {
+    [AUTH_MODES.LOGIN]: {
+        heading: "Welcome back",
+        subHeading: "Sign in to your account to continue tracking your job search",
+        mainCTA: "Sign in",
+        switchPrompt: "Don't have an account?",
+        switchCTA: "Sign up",
+        switchRoute: "/signup"
+    },
+    [AUTH_MODES.SIGNUP]: {
+        heading: "Create your account",
+        subHeading: "Start tracking your job applications in one place",
+        mainCTA: "Sign up",
+        switchPrompt: "Already have an account?",
+        switchCTA: "Sign in",
+        switchRoute: "/login"
+    }
+};
+
+export const SIGNUP_CONFIRMATION_STRINGS = {
+    TITLE: "Check your inbox",
+    DESCRIPTION: "We've sent you a confirmation link. Click it to finish creating your account, then sign in."
+};
 
 export const DEMO_LOGIN_CREDS = {
     EMAIL: "demo@hiretrack.app",

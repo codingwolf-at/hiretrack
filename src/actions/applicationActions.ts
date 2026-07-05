@@ -50,3 +50,22 @@ export const updateApplicationAction = async (applicationID: ApplicationIDTypes,
 
     return updated;
 };
+
+export const deleteApplicationAction = async (applicationID: ApplicationIDTypes) => {
+    if (!applicationID) {
+        throw new Error("Missing application id for delete");
+    }
+
+    const cookieStore = await cookies();
+    const supabase = createSupabaseServerClient(cookieStore);
+
+    const { error } = await supabase
+        .from("applications")
+        .delete()
+        .eq("id", applicationID);
+
+    if (error) {
+        console.error("SUPABASE DELETE ERROR:", error);
+        throw error;
+    }
+};

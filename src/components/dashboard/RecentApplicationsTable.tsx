@@ -1,25 +1,38 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronRight, EllipsisVerticalIcon } from "lucide-react";
 // hooks
 import useApplicationUI from "@/hooks/useApplicationUI";
 // types
 import { Application, ApplicationStatus, TableActionsTypes } from "@/types/application";
 // constants
-import { APPLICATION_KEYS, RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS, RECENT_APPLICATIONS_TABLE_FIELDS, TABLE_ACTIONS, TABLE_ACTIONS_DROPDOWN_OPTIONS } from "@/constants/ui";
+import { APPLICATION_KEYS, APPLICATIONS_TABLE_EMPTY_STATE, DELETE_APPLICATION_DIALOG, RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS, RECENT_APPLICATIONS_TABLE_FIELDS, TABLE_ACTIONS, TABLE_ACTIONS_DROPDOWN_OPTIONS } from "@/constants/ui";
+// actions
+import { deleteApplicationAction } from "@/actions/applicationActions";
 // components
 import Link from "next/link";
 import Button from "../ui/Button";
 import Dropdown from "../ui/Dropdown";
 import StatusBadge from "../ui/StatusBadge";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 const RecentApplicationsTable = ({ applications }: { applications: Application[] }) => {
 
     const { startEditApplication } = useApplicationUI();
 
+    const [applicationToDelete, setApplicationToDelete] = useState<Application | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const router = useRouter();
+
     const handleActions = (action: TableActionsTypes, application: Application) => {
         if (action === TABLE_ACTIONS.VIEW_EDIT) {
-            startEditApplication(application)
+            startEditApplication(application);
+        }
+        if (action === TABLE_ACTIONS.DELETE) {
+            setApplicationToDelete(application);
         }
     };
 
@@ -27,7 +40,19 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
         handleActions(TABLE_ACTIONS.VIEW_EDIT, application);
     };
 
-    // TODO: give a min height to table (= height of 5 rows) so that it will help in empty state & when there are less rows
+    const handleConfirmDelete = async () => {
+        if (!applicationToDelete) return;
+        try {
+            setIsDeleting(true);
+            await deleteApplicationAction(applicationToDelete.id);
+            setApplicationToDelete(null);
+            router.refresh();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     const renderCellValue = (key: keyof Application, application: Application) => {
         switch (key) {
@@ -37,7 +62,7 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                 );
             case APPLICATION_KEYS.ACTIONS:
                 return (
-                    <Dropdown 
+                    <Dropdown
                         options={TABLE_ACTIONS_DROPDOWN_OPTIONS}
                         onChange={(action) => handleActions(action, application)}
                         showChevron={false}
@@ -86,9 +111,17 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                         </tr>
                     </thead>
                     <tbody className="[&_tr:last-child]:border-0">
+                        {applications.length === 0 && (
+                            <tr>
+                                <td colSpan={RECENT_APPLICATIONS_TABLE_COLUMNS_LABELS.length} className="h-64 text-center align-middle">
+                                    <p className="text-sm font-medium text-foreground">{APPLICATIONS_TABLE_EMPTY_STATE.TITLE}</p>
+                                    <p className="mt-1 text-sm text-muted-foreground">{APPLICATIONS_TABLE_EMPTY_STATE.HINT}</p>
+                                </td>
+                            </tr>
+                        )}
                         {applications.map(application => (
-                            <tr 
-                                key={application.id} 
+                            <tr
+                                key={application.id}
                                 className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors border-border cursor-pointer"
                                 onClick={() => handleRowClick(application)}
                             >
@@ -102,6 +135,17 @@ const RecentApplicationsTable = ({ applications }: { applications: Application[]
                     </tbody>
                 </table>
             </div>
+            <ConfirmDialog
+                open={!!applicationToDelete}
+                title={DELETE_APPLICATION_DIALOG.TITLE}
+                description={DELETE_APPLICATION_DIALOG.DESCRIPTION}
+                confirmLabel={DELETE_APPLICATION_DIALOG.CONFIRM}
+                cancelLabel={DELETE_APPLICATION_DIALOG.CANCEL}
+                loading={isDeleting}
+                destructive
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setApplicationToDelete(null)}
+            />
         </div>
     );
 };
