@@ -1,7 +1,7 @@
 import { mergeClass } from "@/lib/ui";
 import Spinner from "./Spinner";
 
-type ButtonVariant =
+export type ButtonVariant =
     | "default"
     | "destructive"
     | "outline"

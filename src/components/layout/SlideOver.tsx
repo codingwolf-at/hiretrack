@@ -36,7 +36,7 @@ const SlideOver = ({ children }: SlideOverProps) => {
     return (
         <div
             className={`
-                fixed inset-0 bg-black/50 z-50 transition-opacity duration-300
+                fixed inset-0 bg-black/50 z-40 transition-opacity duration-300
                 ${active ? "opacity-100" : "opacity-0 pointer-events-none"}
             `}
             onClick={closeSlideOver}

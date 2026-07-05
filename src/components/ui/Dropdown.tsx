@@ -61,13 +61,13 @@ const Dropdown = ({
         setIsOpen(s => !s);
     };
 
-    const onListItemClick = (el: string) => {
+    const onListItemClick = (el: DropdownOption["value"]) => {
         onChange(el);
         setIsOpen(false);
     };
 
     return (
-        <div ref={ref} className={mergeClass("relative w-full", wrapperClasses)}>
+        <div ref={ref} className={mergeClass("relative w-full", wrapperClasses)} onClick={(e) => e.stopPropagation()}>
             <Button
                 type="button"
                 onClick={toggleDropdown}

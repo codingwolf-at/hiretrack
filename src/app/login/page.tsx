@@ -52,11 +52,10 @@ const Page = () => {
         } else {
             router.push('/dashboard');
         }
-        setDemoLoggingIn(false);
     };
 
     // TODO: currently the password is not in encrypted form and we can see it in the network tab
-    // TODO: currently if i am logged in and go to route /login it should redirect me to dashboard
+    // TODO: currently if i am logged in and go to route /login it should redirect me to dashboard (use a layout over dashboard)
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
